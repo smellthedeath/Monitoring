@@ -1,0 +1,57 @@
+groups:
+  - name: AsteriskVoIPAlerts
+    rules:
+      - alert: AsteriskDown
+        expr: asterisk_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: asterisk
+          type: telephony
+        annotations:
+          summary: "🚨 Asterisk PBX is DOWN"
+          description: "Asterisk PBX service on {{ $labels.instance }} is unreachable or stopped."
+
+      - alert: AsteriskSIPTrunkDown
+        expr: asterisk_sip_peer_status{peer=~".*trunk.*|98.*"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: sip_trunk
+          type: telephony
+        annotations:
+          summary: "🚨 SIP Trunk {{ $labels.peer }} is DOWN"
+          description: "Main SIP telecommunication trunk {{ $labels.peer }} is unregistered or offline."
+
+      - alert: AsteriskQueueHighWaiting
+        expr: asterisk_queue_callers > 8
+        for: 3m
+        labels:
+          severity: warning
+          service: queue
+          type: telephony
+        annotations:
+          summary: "⚠️ VoIP Queue {{ $labels.queue }} Overloaded"
+          description: "Call queue {{ $labels.queue }} has more than 8 callers waiting (Current: {{ $value }})."
+
+      - alert: AsteriskMassExtensionsOffline
+        expr: asterisk_sip_peers_online < 10
+        for: 3m
+        labels:
+          severity: warning
+          service: extensions
+          type: telephony
+        annotations:
+          summary: "⚠️ Mass SIP Extensions Offline"
+          description: "Total online extensions dropped significantly below 10 (Current: {{ $value }})."
+
+      - alert: AsteriskHighCallVolume
+        expr: asterisk_active_calls > 35
+        for: 5m
+        labels:
+          severity: warning
+          service: calls
+          type: telephony
+        annotations:
+          summary: "⚠️ High VoIP Call Volume"
+          description: "Active concurrent calls exceeded 35 for 5 minutes (Current: {{ $value }})."

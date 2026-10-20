@@ -1,0 +1,318 @@
+﻿{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": 1840019196293120,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 100,
+      "title": "NVR Core & IP Cameras Overview",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [
+            { "options": { "0": { "color": "red", "text": "DOWN" }, "1": { "color": "green", "text": "ONLINE (UP)" } }, "type": "value" }
+          ],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        }
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "id": 1,
+      "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "values": false } },
+      "title": "NVR Surveillance Hub (10.0.2.5)",
+      "type": "stat",
+      "targets": [{ "expr": "probe_success{job=\"dahua-nvr\"}", "refId": "A" }]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }, { "color": "yellow", "value": 20 }, { "color": "red", "value": 50 }] },
+          "unit": "ms"
+        }
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "id": 2,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "values": false } },
+      "title": "NVR Ping Latency",
+      "type": "stat",
+      "targets": [{ "expr": "probe_duration_seconds{job=\"dahua-nvr\"} * 1000", "refId": "A" }]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "id": 3,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "values": false } },
+      "title": "Total IP Cameras",
+      "type": "stat",
+      "targets": [{ "expr": "count(probe_success{job=\"blackbox_icmp\"})", "refId": "A" }]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "id": 4,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "values": false } },
+      "title": "Cameras Online",
+      "type": "stat",
+      "targets": [{ "expr": "count(probe_success{job=\"blackbox_icmp\"} == 1)", "refId": "A" }]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [
+            { "options": { "0": { "color": "green", "text": "0 (ALL UP)" } }, "type": "value" }
+          ],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] },
+          "unit": "short"
+        }
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "id": 5,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "values": false } },
+      "title": "Cameras Offline",
+      "type": "stat",
+      "targets": [{ "expr": "count(probe_success{job=\"blackbox_icmp\"} != 1) or vector(0)", "refId": "A" }]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "yellow", "value": 90 }, { "color": "green", "value": 98 }] },
+          "unit": "percent"
+        }
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "id": 6,
+      "options": { "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "values": false }, "showThresholdLabels": false, "showThresholdMarkers": true },
+      "title": "NVR Availability (24h)",
+      "type": "gauge",
+      "targets": [{ "expr": "avg_over_time(probe_success{job=\"dahua-nvr\"}[24h]) * 100", "refId": "A" }]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "id": 101,
+      "title": "All 25 IP Cameras Live Grid & Details",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Status" },
+            "properties": [
+              { "id": "custom.displayMode", "value": "color-background" },
+              { "id": "mappings", "value": [{ "options": { "0": { "color": "red", "text": "DOWN / DISCONNECTED" }, "1": { "color": "green", "text": "UP (ONLINE)" } }, "type": "value" }] }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Ping Latency (ms)" },
+            "properties": [
+              { "id": "unit", "value": "ms" },
+              { "id": "decimals", "value": 2 },
+              { "id": "color", "value": { "mode": "thresholds" } },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 15 }, { "color": "red", "value": 50 }] } }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 12, "w": 12, "x": 0, "y": 6 },
+      "id": 7,
+      "title": "IP Cameras Status & Latency Table (25 Cameras)",
+      "type": "table",
+      "targets": [
+        {
+          "expr": "probe_success{job=\"blackbox_icmp\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        },
+        {
+          "expr": "probe_duration_seconds{job=\"blackbox_icmp\"} * 1000",
+          "format": "table",
+          "instant": true,
+          "refId": "B"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "seriesToColumns",
+          "options": { "byField": "instance" }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time 1": true, "Time 2": true,
+              "__name__ 1": true, "__name__ 2": true,
+              "env 1": true, "env 2": true,
+              "job 1": true, "job 2": true,
+              "type 1": true, "type 2": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "Value #A": "Status",
+              "Value #B": "Ping Latency (ms)",
+              "instance": "Camera IP Address"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [{ "desc": false, "field": "Camera IP Address" }]
+          }
+        }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "fillOpacity": 5
+          },
+          "unit": "ms"
+        }
+      },
+      "gridPos": { "h": 12, "w": 12, "x": 12, "y": 6 },
+      "id": 8,
+      "title": "IP Cameras Latency Timeseries (Network Jitter Check)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "probe_duration_seconds{job=\"blackbox_icmp\"} * 1000",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull", "max"],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        }
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
+      "id": 102,
+      "title": "Dahua NVR Historical Latency & Packet Loss",
+      "type": "row"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 10
+          },
+          "unit": "ms"
+        }
+      },
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 19 },
+      "id": 9,
+      "title": "NVR ICMP Ping Latency History (ms)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "probe_duration_seconds{job=\"dahua-nvr\"} * 1000",
+          "legendFormat": "NVR Surveillance Hub (10.0.2.5)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "bars",
+            "fillOpacity": 30
+          },
+          "unit": "percent",
+          "max": 100,
+          "min": 0
+        }
+      },
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 19 },
+      "id": 10,
+      "title": "NVR Packet Loss History %",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "(1 - probe_success{job=\"dahua-nvr\"}) * 100",
+          "legendFormat": "Packet Loss %",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["enterprise", "cctv", "nvr", "cameras", "dahua"],
+  "time": { "from": "now-3h", "to": "now" },
+  "timepicker": {
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m"]
+  },
+  "timezone": "browser",
+  "title": "Enterprise CCTV & NVR Surveillance",
+  "uid": "dahua-nvr-clean-v3",
+  "version": 9
+}

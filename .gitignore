@@ -1,0 +1,37 @@
+# Environment & Secrets
+.env
+*.pem
+*.key
+*.crt
+*.pfx
+*.passwd
+
+# Data & Databases
+grafana.db
+data/
+prometheus_data/
+grafana_data/
+alertmanager_data/
+
+# Backups & Archives
+backup/
+backups/
+*.tar.gz
+*.tgz
+*.zip
+*.bak*
+
+# Internal Notes & Unsanitized Runbooks
+MONITORING_RUNBOOK.md
+*.ps1
+request.txt
+/rules/
+*.png
+
+# OS & Editor Files
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+.vscode/
+.idea/

@@ -1,0 +1,13 @@
+[
+  {
+    "targets": [
+      "https://example.com",
+      "https://api.example.com",
+      "https://monitoring.example.com"
+    ],
+    "labels": {
+      "env": "production",
+      "type": "web_service"
+    }
+  }
+]

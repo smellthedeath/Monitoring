@@ -1,0 +1,46 @@
+groups:
+  - name: mikrotik-rules
+    rules:
+      - alert: MikroTikCoreUplinkDown
+        expr: ifOperStatus{job="mikrotik", ifName=~".*cisco-po.*|.*esxi-host.*|.*core-uplink.*"} != 1
+        for: 1m
+        labels:
+          severity: critical
+          service: mikrotik
+          type: network
+        annotations:
+          summary: "🚨 Core Uplink Down on {{ $labels.instance }}"
+          description: "Interface {{ $labels.ifName }} on {{ $labels.instance }} is disconnected."
+
+      - alert: MikroTikWANLinkDown
+        expr: ifOperStatus{job="mikrotik", ifName=~".*WAN.*|.*PPPoE.*|.*Internet.*"} != 1
+        for: 1m
+        labels:
+          severity: critical
+          service: mikrotik
+          type: network
+        annotations:
+          summary: "🚨 WAN Gateway Link Down on {{ $labels.instance }}"
+          description: "WAN uplink {{ $labels.ifName }} is DOWN."
+
+      - alert: MikroTikPSUFailure
+        expr: mtxrGaugeValue{mtxrGaugeName=~"psu[12]-state"} != 0
+        for: 1m
+        labels:
+          severity: critical
+          service: mikrotik
+          type: hardware
+        annotations:
+          summary: "🚨 Redundant PSU Failed on {{ $labels.instance }}"
+          description: "Power Supply {{ $labels.mtxrGaugeName }} on {{ $labels.instance }} is disconnected or faulty."
+
+      - alert: MikroTikFanFailure
+        expr: mtxrGaugeValue{mtxrGaugeName=~"fan[12]-speed"} < 1500
+        for: 2m
+        labels:
+          severity: critical
+          service: mikrotik
+          type: hardware
+        annotations:
+          summary: "🚨 Cooling Fan Speed Below Threshold on {{ $labels.instance }}"
+          description: "Fan {{ $labels.mtxrGaugeName }} speed dropped below 1500 RPM (Current: {{ $value }} RPM)."

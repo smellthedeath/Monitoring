@@ -1,0 +1,35 @@
+groups:
+  - name: cctv-surveillance
+    rules:
+      - alert: DahuaNVRDown
+        expr: probe_success{job="dahua-nvr"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: nvr
+          type: surveillance
+        annotations:
+          summary: "🚨 Dahua NVR {{ $labels.instance }} is DOWN"
+          description: "NVR recorder is unreachable via ICMP probe for more than 2 minutes."
+
+      - alert: DahuaNVRPacketLoss
+        expr: probe_duration_seconds{job="dahua-nvr"} > 0.05
+        for: 3m
+        labels:
+          severity: warning
+          service: nvr
+          type: surveillance
+        annotations:
+          summary: "⚠️ Dahua NVR High Latency / Jitter"
+          description: "Ping latency to NVR exceeds 50ms (Current: {{ $value }}s)."
+
+      - alert: MultipleCamerasDown
+        expr: count(probe_success{job="blackbox_icmp"} == 0) > 3
+        for: 2m
+        labels:
+          severity: critical
+          service: camera
+          type: surveillance
+        annotations:
+          summary: "🚨 Multiple CCTV Cameras Disconnected"
+          description: "More than 3 IP cameras are offline simultaneously (Offline count: {{ $value }})."

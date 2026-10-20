@@ -1,0 +1,26 @@
+[
+  {
+    "targets": ["10.0.0.11:9182"],
+    "labels": {
+      "job": "windows_exporter",
+      "env": "production",
+      "name": "Domain-Controller-01"
+    }
+  },
+  {
+    "targets": ["10.0.0.12:9182"],
+    "labels": {
+      "job": "windows_exporter",
+      "env": "production",
+      "name": "Domain-Controller-02"
+    }
+  },
+  {
+    "targets": ["10.0.0.20:9182"],
+    "labels": {
+      "job": "windows_exporter",
+      "env": "production",
+      "name": "Backup-Veeam-Server"
+    }
+  }
+]

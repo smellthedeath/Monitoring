@@ -1,0 +1,24 @@
+groups:
+  - name: cisco-switches
+    rules:
+      - alert: CiscoSwitchDown
+        expr: up{job="cisco-switches"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: cisco
+          type: network
+        annotations:
+          summary: "🚨 Cisco Switch {{ $labels.instance }} is DOWN"
+          description: "Cisco switch {{ $labels.instance }} failed SNMP polling for more than 2 minutes."
+
+      - alert: CiscoCoreUplinkDown
+        expr: ifOperStatus{job="cisco-switches", ifName=~"Po.*"} != 1
+        for: 1m
+        labels:
+          severity: critical
+          service: cisco
+          type: network
+        annotations:
+          summary: "🚨 Cisco Core PortChannel Down on {{ $labels.instance }}"
+          description: "Core link aggregation port {{ $labels.ifName }} on {{ $labels.instance }} is DOWN."

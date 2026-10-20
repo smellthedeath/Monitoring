@@ -1,0 +1,26 @@
+[
+  {
+    "targets": ["10.0.0.101:9100"],
+    "labels": {
+      "job": "node_exporter",
+      "env": "production",
+      "name": "Database-Primary"
+    }
+  },
+  {
+    "targets": ["10.0.0.102:9100"],
+    "labels": {
+      "job": "node_exporter",
+      "env": "production",
+      "name": "Application-Backend"
+    }
+  },
+  {
+    "targets": ["10.0.0.200:9100"],
+    "labels": {
+      "job": "node_exporter",
+      "env": "production",
+      "name": "VoIP-Server"
+    }
+  }
+]

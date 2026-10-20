@@ -1,0 +1,72 @@
+groups:
+  - name: linux-servers
+    rules:
+      # ==================== Host Health ====================
+      - alert: NodeDown
+        expr: up{job=~"node.*"} != 1
+        for: 3m
+        labels:
+          severity: critical
+          service: exporter
+          type: health
+        annotations:
+          summary: "🚨 Server {{ $labels.instance }} is DOWN"
+          description: "Server {{ $labels.instance }} is unreachable for more than 3 minutes."
+
+      # ==================== CPU & Performance ====================
+      - alert: HighCPUUsage
+        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle", job=~"node.*"}[5m])) * 100) > 85
+        for: 5m
+        labels:
+          severity: warning
+          service: cpu
+          type: performance
+        annotations:
+          summary: "⚠️ High CPU Usage on {{ $labels.instance }}"
+          description: "CPU usage is at {{ printf \"%.1f\" $value }}%."
+
+      # ==================== Memory ====================
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes{job=~"node.*"} / node_memory_MemTotal_bytes{job=~"node.*"})) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+          service: memory
+          type: performance
+        annotations:
+          summary: "🚨 Critical Memory Usage on {{ $labels.instance }}"
+          description: "Memory usage is at {{ printf \"%.1f\" $value }}%."
+
+      # ==================== Disks & Storage ====================
+      - alert: LinuxDiskUsageWarning
+        expr: ((node_filesystem_size_bytes{fstype=~"ext4|xfs|btrfs", job=~"node.*"} - node_filesystem_free_bytes{fstype=~"ext4|xfs|btrfs", job=~"node.*"}) / node_filesystem_size_bytes{fstype=~"ext4|xfs|btrfs", job=~"node.*"}) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: disk
+          type: storage
+        annotations:
+          summary: "⚠️ Linux Disk High Usage on {{ $labels.instance }}"
+          description: "Mountpoint {{ $labels.mountpoint }} on {{ $labels.instance }} exceeded 80% usage (Current: {{ printf \"%.1f\" $value }}%)."
+
+      - alert: LinuxDiskUsageCritical
+        expr: ((node_filesystem_size_bytes{fstype=~"ext4|xfs|btrfs", job=~"node.*"} - node_filesystem_free_bytes{fstype=~"ext4|xfs|btrfs", job=~"node.*"}) / node_filesystem_size_bytes{fstype=~"ext4|xfs|btrfs", job=~"node.*"}) * 100 > 90
+        for: 3m
+        labels:
+          severity: critical
+          service: disk
+          type: storage
+        annotations:
+          summary: "🚨 Linux Disk Almost Full on {{ $labels.instance }}"
+          description: "Mountpoint {{ $labels.mountpoint }} on {{ $labels.instance }} exceeded 90% usage (Current: {{ printf \"%.1f\" $value }}%)."
+
+      - alert: LinuxDiskWillFillIn24Hours
+        expr: predict_linear(node_filesystem_free_bytes{fstype=~"ext4|xfs|btrfs", job=~"node.*"}[4h], 86400) < 0 and ((node_filesystem_size_bytes{fstype=~"ext4|xfs|btrfs", job=~"node.*"} - node_filesystem_free_bytes{fstype=~"ext4|xfs|btrfs", job=~"node.*"}) / node_filesystem_size_bytes{fstype=~"ext4|xfs|btrfs", job=~"node.*"}) * 100 > 65
+        for: 15m
+        labels:
+          severity: warning
+          service: disk
+          type: storage
+        annotations:
+          summary: "⚠️ Linux Disk Will Fill in 24h on {{ $labels.instance }}"
+          description: "Linear prediction estimates disk {{ $labels.mountpoint }} on {{ $labels.instance }} will fill up within 24 hours."
